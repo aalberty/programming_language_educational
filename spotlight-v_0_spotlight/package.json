@@ -1,0 +1,42 @@
+{
+  "name": "spotlight",
+  "displayName": "Spotlight",
+  "description": "Makes the developer's mental spotlight visible by dynamically dimming unrelated code across files and emphasizing only the symbols, handlers, and styles semantically connected to where the cursor is.",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.107.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "spotlight.selectTag",
+        "title": "Spotlight: Select Tag"
+      },
+      {
+        "command": "spotlight.clear",
+        "title": "Spotlight: Clear"
+      },
+      {
+        "command": "spotlight.wrapSelectionWithTag",
+        "title": "Spotlight: Wrap Selection With Tag"
+      }
+    ]
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "pretest": "npm run lint",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.107.0",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "22.x",
+    "eslint": "^9.39.1",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2"
+  }
+}
