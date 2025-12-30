@@ -2,7 +2,7 @@ from enum import Enum
 
 class TokenType(Enum):
     ILLEGAL = "ILLEGAL"
-    EOF = "EOF"
+    # EOF = "EOF"
 
     IDENT = "IDENT"
     INT = "INT"
