@@ -27,6 +27,50 @@ class Lexer:
         self.current_position = self.current_position + 1
         return False
     
+    # #tag_ident_start
+    # TODO: IDENT impl; after a 'LET' and before a '=' is the value for 'IDENT'
+    def find_ident(self):
+        # find '='
+        # find ';'
+        # whichever comes first is the 'end' delimiter for the ident
+        # 'start' delimiter is self.current_position - AKA it's assumed this func is only called
+        # after we find a 'LET'
+
+        try:
+            equal_index = self.source[self.current_position:].index("=")
+        except:
+            equal_index = -1
+        
+        try:
+            semicolon_index = self.source[self.current_position:].index(";")
+        except:
+            semicolon_index = -1
+
+        if (equal_index == -1) and (semicolon_index == -1):
+            print("ERR: no IDENT delimiter found.")
+            return False
+
+        else:
+            delimiter_index = False
+            if (equal_index == -1):
+                delimiter_index = semicolon_index
+            elif (semicolon_index == -1):
+                delimiter_index = equal_index
+            elif (equal_index < semicolon_index):
+                delimiter_index = equal_index
+            else:
+                delimiter_index = semicolon_index
+        
+        delimiter_index += self.current_position
+
+        # strip whitespace
+        ident_val = self.source[self.current_position:delimiter_index]
+        ident_val = ident_val.strip()
+
+        self.current_position = delimiter_index
+        return token(token_type("IDENT"), ident_val)
+    # #tag_ident_end
+
     def find_tokens(self):
         tokens = []
         while self.current_position < len(self.source):

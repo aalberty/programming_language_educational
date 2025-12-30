@@ -2,9 +2,11 @@ from enum import Enum
 
 class TokenType(Enum):
     ILLEGAL = "ILLEGAL"
-    # EOF = "EOF"
+    EOF = "EOF"
 
+    # #tag_ident_start
     IDENT = "IDENT"
+    # #tag_ident_end
     INT = "INT"
 
     # #tag_operators_start
