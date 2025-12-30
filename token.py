@@ -7,6 +7,7 @@ class TokenType(Enum):
     IDENT = "IDENT"
     INT = "INT"
 
+    # #tag_single_char_start
     # #tag_operators_start
     ASSIGN = "="
     PLUS = "+"
@@ -24,6 +25,7 @@ class TokenType(Enum):
     LBRACE = "{"
     RBRACE = "}"
     # #tag_delimiters_end
+    # #tag_single_char_end
 
     # #tag_keywords_start
     FUNCTION = "FUNCTION"
