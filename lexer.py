@@ -1,5 +1,12 @@
 from tkn import TokenType as token_type 
 from tkn import Token as token
+from tkn import RESERVED_TOKEN_TYPES, NONRESERVED_TOKEN_TYPES
+
+WHITESPACE_CHARS = [
+    ' ',
+    '\t',
+    '\n'
+]
 
 class Lexer:
     def __init__(self, source: str):
@@ -12,111 +19,63 @@ class Lexer:
     
     # TODO: single main function `tokenize` which tracks straight through the file
     # finding chunks to classify as different kinds of tokens
-
-    def find_next_token(self):
-        for t in token_type:
-            # check that source has enough chars left in the len to possibly contain the token_type.value
-            if (len(self.source) - (self.current_position + len(t.value)) < 0):
-                continue
-            
-            # check if this token present starting at the current position
-            start = self.current_position
-            end = (self.current_position + len(t.value))
-
-            if ((self.source[start:end]).upper() == t.value):
-                self.current_position = self.current_position + len(t.value)
-                return token(t, t.value)
-        
-        self.current_position = self.current_position + 1
-        return False
-    
-    # #tag_ident_start
-    # TODO: IDENT impl; after a 'LET' and before a '=' is the value for 'IDENT'
-    def find_ident(self):
-        # find '='
-        # find ';'
-        # whichever comes first is the 'end' delimiter for the ident
-        # 'start' delimiter is self.current_position - AKA it's assumed this func is only called
-        # after we find a 'LET'
-
-        try:
-            equal_index = self.source[self.current_position:].index("=")
-        except:
-            equal_index = -1
-        
-        try:
-            semicolon_index = self.source[self.current_position:].index(";")
-        except:
-            semicolon_index = -1
-
-        if (equal_index == -1) and (semicolon_index == -1):
-            print("ERR: no IDENT delimiter found.")
-            return False
-
-        else:
-            delimiter_index = False
-            if (equal_index == -1):
-                delimiter_index = semicolon_index
-            elif (semicolon_index == -1):
-                delimiter_index = equal_index
-            elif (equal_index < semicolon_index):
-                delimiter_index = equal_index
-            else:
-                delimiter_index = semicolon_index
-        
-        delimiter_index += self.current_position
-
-        # strip whitespace
-        ident_val = self.source[self.current_position:delimiter_index]
-        ident_val = ident_val.strip()
-
-        self.current_position = delimiter_index
-        return token(token_type("IDENT"), ident_val)
-    # #tag_ident_end
-
-
-    # #tag_tokens_start
-    def find_tokens(self):
+    # skip the following token types when checking literal chars:
+    #   ILLEGAL = "ILLEGAL"
+    #   EOF = "EOF"
+    #   IDENT = "IDENT"
+    #   INT = "INT"
+    #   STR = "STR"
+    def tokenize(self):
         tokens = []
         while self.current_position < len(self.source):
-            t = self.find_next_token()
-            if t != False:
-                tokens.append(t)
+            new_position = self.current_position + 1
+            # skip whitespace
+            if self.source[self.current_position] in WHITESPACE_CHARS:
+                self.current_position = new_position
+                continue
+
+            found = False
+            for t in RESERVED_TOKEN_TYPES:
+                start_index = self.current_position
+                end_index = len(t.value) + start_index
+                # RESERVED TOKENS 
+                # check for tkn.RESERVED_TOKEN_TYPES; tokens which have a static defined literal
+                # e.g. ';', or 'LET'
+                if self.source[start_index:end_index].upper() == t.value:
+
+                    # TODO: `'` and `"` DELIMITER HANDLING
+
+                    tokens.append(token(t, t.value))
+                    new_position = end_index
+                    found = True
+                    break
+
+
+            current_char = self.source[self.current_position]
+            if not found:
+                # IDENT
+                if current_char == "_" or current_char.isalpha():
+                    ident_start = self.current_position
+                    seeker = self.current_position + 1
+                    while self.source[seeker] == "_" or self.source[seeker].isalnum():
+                        seeker += 1
+                    ident_end = seeker
+                    tokens.append(token(token_type.IDENT, self.source[ident_start:ident_end]))
+                    new_position = ident_end 
+                    found = True
+            
+            if not found:
+                # VALUE
+                if current_char.isnumeric():
+                    val_start = self.current_position
+                    seeker = self.current_position + 1
+                    while self.source[seeker].isnumeric():
+                        seeker += 1
+                    val_end = seeker
+                    tokens.append(token(token_type.INT, self.source[val_start:val_end]))
+                    new_position = val_end
+                    found = True
+
+
+            self.current_position = new_position
         return tokens
-    # #tag_tokens_end
-
-    # #tag_value_start
-    def find_value(self):
-        # since this function looks for the value, it can be implied that it's called
-        # __after__ a `find_next_token` -> LET  &&  `find_ident` -> <some_identity>
-        # meaning the lexer's position has been updated accordingly -- e.g.:
-        #               'let x = 5;'
-        #                     ^
-        #                   just before the `=`; aka just in front of the delimiter 
-        #                                                          used to find identity.
-
-        delimiter = self.source[self.current_position]
-        # 1. ident_delimiter = `;`
-        if delimiter == ';':
-            return
-
-        # 2. ident_delimiter = `=`
-        elif delimiter == '=':
-            # find next operator or ';'
-
-            #TODO: impl logic to check for INT; >><0-9><<
-                # NOTE: __may__ be delimited by whitespace, but not necessarily
-                       
-
-            #TODO: impl logic to check for STR; ' ' or " "
-                # NOTE: __may__ be delimited by whitespace, but not necessarily
-
-        return
-    # #tag_value_end
-
-
-def _vprint(verbose_check: bool, msg: str):
-    if (verbose_check == True):
-        print(msg)
-
-        

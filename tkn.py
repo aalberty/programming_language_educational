@@ -47,6 +47,46 @@ class TokenType(Enum):
     RETURN = "RETURN"
     # #tag_keywords_end
 
+NONRESERVED_TOKEN_TYPES = [
+    TokenType.ILLEGAL,
+    TokenType.EOF,
+    TokenType.IDENT,
+    TokenType.INT,
+    TokenType.STR
+]
+
+RESERVED_TOKEN_TYPES = [
+    TokenType.DBLEQL,
+    TokenType.BANGEQL,
+    TokenType.LTEQL,
+    TokenType.GTEQL,
+    TokenType.LANGLE,
+    TokenType.RANGLE,
+    TokenType.ASSIGN,
+    TokenType.PLUS,
+    TokenType.MINUS,
+    TokenType.BANG,
+    TokenType.ASTERISK,
+    TokenType.SLASH,
+    TokenType.COMMA,
+    TokenType.SEMICOLON,
+    TokenType.LPAREN,
+    TokenType.RPAREN,
+    TokenType.LBRACE,
+    TokenType.RBRACE,
+    TokenType.QUOTE,
+    TokenType.DBL_QUOTE,
+    TokenType.FUNCTION,
+    TokenType.LET,
+    TokenType.VAR,
+    TokenType.CONST,
+    TokenType.IF,
+    TokenType.FOR,
+    TokenType.ELSE,
+    TokenType.RETURN
+]
+
+
 class Token:
     def __init__(self, type_: TokenType, literal: str):
         self.type = type_

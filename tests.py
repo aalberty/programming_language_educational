@@ -1,3 +1,5 @@
+from tkn import TokenType as token_type
+from lexer import Lexer as lexer
 # NOTE: To add new tests, check out the `new_test_instructions` tag
 
 # #tag_new_test_instructions_start
@@ -18,7 +20,14 @@
 #
 # #tag_new_test_instructions_end
 
-
+def tokenize(case, verbose):
+    l = lexer(case)
+    tokens = l.tokenize()
+    res = ""
+    for t in tokens:
+        res += f"{t.literal} "
+    res = res.strip()
+    return res
 
 
 
@@ -41,6 +50,12 @@
 # #tag_new_test_instructions_end
 
 TEST_CASES = {
+    "tokenize": [
+        ['let x = 5;', 'LET x = 5 ;'],
+        ['let test = 10;', 'LET test = 10 ;'],
+        ['let test = "this is a string";', 'LET test = "this is a string" ;'],
+        ["let test = 'this is a string';", 'LET test = "this is a string" ;'],
+    ]
 }
 
 def run_cases(verbose: bool):
@@ -86,7 +101,8 @@ def run_cases(verbose: bool):
             #          res = find_ident(case[0], verbose)
             # 
             # #tag_new_test_instructions_end
-
+            if 'tokenize' == test:
+                res = tokenize(case[0], verbose)
 
             if res == case[1]:
                 scorecard['passes'] = scorecard['passes'] + 1
@@ -102,4 +118,4 @@ def run_cases(verbose: bool):
 
 
 
-# run_cases(verbose=False)
+run_cases(verbose=False)
