@@ -90,4 +90,5 @@ class Lexer:
 
 
             self.current_position = new_position
+        tokens.append(token(token_type.EOF, 'EOF'))
         return tokens

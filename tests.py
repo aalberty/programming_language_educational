@@ -25,7 +25,10 @@ def tokenize(case, verbose):
     tokens = l.tokenize()
     res = ""
     for t in tokens:
-        res += f"{t.literal} "
+        if t.type == token_type.EOF:
+            continue
+        else:
+            res += f"{t.literal} "
     res = res.strip()
     return res
 
