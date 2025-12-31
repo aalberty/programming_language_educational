@@ -110,7 +110,8 @@ def run_cases(verbose: bool):
             else:
                 scorecard['fails'] = scorecard['fails'] + 1
                 print(f"{scorecard['test_name']} Test {case_counter}/{len(cases)} failed -- res: '{res}'   case: '{case[0]}'    expected: '{case[1]}'")
-        print(f"Tests complete. Scorecard: {scorecard}")
+        # TODO: change this to be a suite summary with an optional test summary after each individual test if `verbose=True`
+        print(f"{padding}Tests complete. {scorecard['passes']}/{scorecard['test_cases']} passing tests.{padding}Scorecard: {scorecard}")
         print(f"{padding}{padding}")
         print(f"{padding}{padding}")
             
