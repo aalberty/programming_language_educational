@@ -25,6 +25,7 @@ def tokenize(case, verbose):
     tokens = l.tokenize()
     res = ""
     for t in tokens:
+        # TODO: this is probably a bad idea; could accidentally hide bugs with EOF behavior
         if t.type == token_type.EOF:
             continue
         else:
