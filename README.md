@@ -1,3 +1,14 @@
+=================================
+|| BRANCH: lexer_parser_mix_up ||
+=================================
+
+Started down a path of "if the lexer 'sees' an IDENT followed by a `=`, then it 'knows' to look for a value" - was giving the lexer too much to do.  
+
+The lexer simply scans the file for tokens; the parser is the one that ingests tokens to make sure grammar of the file is correct.
+
+Saving this branch as a learning experience; refactoring on `main`.
+
+
 # programming_language_educational
 Just messing around
 
