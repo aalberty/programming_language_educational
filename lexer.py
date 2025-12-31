@@ -82,6 +82,33 @@ class Lexer:
         return tokens
     # #tag_tokens_end
 
+    # #tag_value_start
+    def find_value(self):
+        # since this function looks for the value, it can be implied that it's called
+        # __after__ a `find_next_token` -> LET  &&  `find_ident` -> <some_identity>
+        # meaning the lexer's position has been updated accordingly -- e.g.:
+        #               'let x = 5;'
+        #                     ^
+        #                   just before the `=`; aka just in front of the delimiter 
+        #                                                          used to find identity.
+
+        delimiter = self.source[self.current_position]
+        # 1. ident_delimiter = `;`
+        if delimiter == ';':
+            return
+
+        # 2. ident_delimiter = `=`
+        elif delimiter == '=':
+            #TODO: impl logic to check for INT; >><0-9><<
+                # NOTE: __may__ be delimited by whitespace, but not necessarily
+
+            #TODO: impl logic to check for STR; ' ' or " "
+                # NOTE: __may__ be delimited by whitespace, but not necessarily
+
+        return
+    # #tag_value_end
+
+
 
 def _vprint(verbose_check: bool, msg: str):
     if (verbose_check == True):

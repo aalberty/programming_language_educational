@@ -8,6 +8,7 @@ class TokenType(Enum):
     IDENT = "IDENT"
     # #tag_ident_end
     INT = "INT"
+    STR = "STR"
 
     # #tag_operators_start
     DBLEQL = "=="
