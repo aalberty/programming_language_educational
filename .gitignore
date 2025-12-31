@@ -1,3 +1,4 @@
 spotlight-v_0_spotlight
 __pycache__
 __pycache__/*
+*.pyc
