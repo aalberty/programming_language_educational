@@ -43,12 +43,24 @@ class Lexer:
                 # e.g. ';', or 'LET'
                 if self.source[start_index:end_index].upper() == t.value:
 
-                    # TODO: `'` and `"` DELIMITER HANDLING
-
-                    tokens.append(token(t, t.value))
-                    new_position = end_index
-                    found = True
-                    break
+                    # STR DELIMITER HANDLING: `'` and `"` 
+                    if t.value == "'" or t.value == '"':
+                        str_start = self.current_position
+                        seeker = self.current_position + 1
+                        while self.source[seeker] != t.value:
+                            seeker += 1
+                        str_end = seeker
+                        str_literal = self.source[str_start:str_end]
+                        str_literal = str_literal.strip().strip(t.value)
+                        tokens.append(token(t.STR, f'"{str_literal}"'))
+                        new_position = str_end + 1
+                        found = True
+                    else:
+                        # BASE CASE: exact match on operator/keyword
+                        tokens.append(token(t, t.value))
+                        new_position = end_index
+                        found = True
+                        break
 
 
             current_char = self.source[self.current_position]
