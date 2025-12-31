@@ -51,10 +51,26 @@ def tokenize(case, verbose):
 
 TEST_CASES = {
     "tokenize": [
-        ['let x = 5;', 'LET x = 5 ;'],
-        ['let test = 10;', 'LET test = 10 ;'],
-        ['let test = "this is a string";', 'LET test = "this is a string" ;'],
-        ["let test = 'this is a string';", 'LET test = "this is a string" ;'],
+        [
+            'let x = 5;',
+            'LET x = 5 ;'
+        ],
+        [
+            'let test = 10;',
+            'LET test = 10 ;'
+        ],
+        [
+            'let test = "this is a string";',
+            'LET test = "this is a string" ;'
+        ],
+        [
+            "let test = 'this is a string';",
+            'LET test = "this is a string" ;'
+        ],
+        [
+            'let x = (5 + 9);',
+            'LET x = ( 5 + 9 ) ;'
+        ],
     ]
 }
 
