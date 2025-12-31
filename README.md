@@ -7,6 +7,7 @@ Started down a path of "if the lexer 'sees' an IDENT followed by a `=`, then it 
 The lexer simply scans the file for tokens; the parser is the one that ingests tokens to make sure grammar of the file is correct.
 
 Saving this branch as a learning experience; refactoring on `main`.
+Also saving because of the testing strat used.
 
 
 # programming_language_educational
