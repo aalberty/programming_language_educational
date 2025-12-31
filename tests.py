@@ -1,8 +1,5 @@
 # NOTE: To add new tests, check out the `new_test_instructions` tag
 
-from lexer import Lexer as lexer
-from lexer import _vprint
-
 # #tag_new_test_instructions_start
 # 
 # Steps to append a new test with cases
@@ -21,51 +18,11 @@ from lexer import _vprint
 #
 # #tag_new_test_instructions_end
 
-# #tag_value_start
-def find_value(case, verbose):
-    _vprint(verbose, f'Testing lexer.find_value() for source "{case}"')
-    l = lexer(case)
-    # finding a value implies that there's already an IDENT found
-    l.find_next_token()
-    l.find_ident()
-    value = l.find_value()
 
-    if value == False:
-        return
 
-    _vprint(verbose, f"VALUE = '{value.literal}'")
-    _vprint(verbose, '\n')
-    return value.literal
-# #tag_value_end
 
-# #tag_ident_start
-def find_ident(case, verbose):
-    _vprint(verbose, f'Testing lexer.find_ident() for source "{case}"')
-    l = lexer(case)
-    l.find_next_token()
-    # print(f'pos check: {l.current_position}')
-    ident = l.find_ident()
 
-    if ident == False:
-        return
 
-    _vprint(verbose, f"IDENT = '{ident.literal}'")
-    _vprint(verbose, '\n')
-    return ident.literal
-# #tag_ident_end
-
-# #tag_tokens_start
-def find_tokens(case, verbose):
-    _vprint(verbose, f'Testing lexer.find_tokens() for source "{case}"')
-    l = lexer(case)
-    tokens = l.find_tokens()
-    pp_tokens = ""
-    for token in tokens:
-        pp_tokens += token.literal + " "
-    pp_tokens = pp_tokens.strip()
-    _vprint(verbose, pp_tokens)
-    return pp_tokens
-# #tag_tokens_end
 
 
 # #tag_new_test_instructions_start
@@ -79,81 +36,11 @@ def find_tokens(case, verbose):
 #     [ 'case_i', 'expected_i' ],
 # ]
 # 
+# to the global TEST_CASES = {'<test_name>': [[case_1, expected_1], ...]}
 #
 # #tag_new_test_instructions_end
 
 TEST_CASES = {
-
-    # #tag_ident_start
-    "find_ident": [
-        [
-            'let x = 5;',
-            'x'
-        ],
-
-        [
-            'let x_submarine_69 = 5;',
-            'x_submarine_69'
-        ],
-
-        [
-            'let x=5;',
-            'x'
-        ],
-
-        [
-            'let x;',
-            'x'
-        ],
-
-        [
-            'let',
-            None
-        ],
-
-    ],
-    # #tag_ident_end
-
-    # #tag_tokens_start
-    "find_tokens": [
-        [
-            '+ - * / = ; , ( ) { } < >',
-            '+ - * / = ; , ( ) { } < >'
-        ],
-
-        [
-            '== != <= >=',
-            '== != <= >='
-        ],
-        
-        [
-            "' '",
-            "\' \'"
-        ],
-       
-        [
-            '" "',
-            '\" \"'
-        ] 
-    ],
-    # #tag_tokens_end
-
-    # #tag_value_start
-    "find_value": [
-        [
-            'let x = 5;',
-            '5'
-        ],
-        [
-            'let x=10;',
-            '10'
-        ],
-        [
-            'let s = "hello";',
-            "'hello'"
-        ]
-    ]
-    # #tag_value_end
 }
 
 def run_cases(verbose: bool):
@@ -194,13 +81,12 @@ def run_cases(verbose: bool):
             # 
             # Step 3: add an elif check matching the format below to fire as part of the suite
             #
+            #   e.g.:
+            #       if 'find_ident' == test:
+            #          res = find_ident(case[0], verbose)
+            # 
             # #tag_new_test_instructions_end
 
-
-            if 'find_ident' == test:
-                res = find_ident(case[0], verbose)
-            elif  'find_tokens' == test:
-                res = find_tokens(case[0], verbose)
 
             if res == case[1]:
                 scorecard['passes'] = scorecard['passes'] + 1
