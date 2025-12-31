@@ -99,15 +99,17 @@ class Lexer:
 
         # 2. ident_delimiter = `=`
         elif delimiter == '=':
+            # find next operator or ';'
+
             #TODO: impl logic to check for INT; >><0-9><<
                 # NOTE: __may__ be delimited by whitespace, but not necessarily
+                       
 
             #TODO: impl logic to check for STR; ' ' or " "
                 # NOTE: __may__ be delimited by whitespace, but not necessarily
 
         return
     # #tag_value_end
-
 
 
 def _vprint(verbose_check: bool, msg: str):
