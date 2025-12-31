@@ -33,3 +33,8 @@ Do one step at a time:
     - Tiny loop in main.go
 
 If something feels hard, you’re probably jumping ahead.
+
+## notes
+- check out the `lexer_parser_mix_up` branch for:
+    - understanding when the lexer starts taking on too much
+    - BONUS testing strat: see `tests.py`
