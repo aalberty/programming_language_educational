@@ -10,6 +10,12 @@ class TokenType(Enum):
     INT = "INT"
 
     # #tag_operators_start
+    DBLEQL = "=="
+    BANGEQL = "!="
+    LTEQL = "<="
+    GTEQL = ">="
+    LANGLE = "<"
+    RANGLE = ">"
     ASSIGN = "="
     PLUS = "+"
     MINUS = "-"
@@ -25,11 +31,15 @@ class TokenType(Enum):
     RPAREN = ")"
     LBRACE = "{"
     RBRACE = "}"
+    QUOTE = "'"
+    DBL_QUOTE = '"'
     # #tag_delimiters_end
 
     # #tag_keywords_start
     FUNCTION = "FUNCTION"
     LET = "LET"
+    VAR = "VAR"
+    CONST = "CONST"
     IF  = "IF"
     FOR = "FOR"
     ELSE = "ELSE"

@@ -71,6 +71,8 @@ class Lexer:
         return token(token_type("IDENT"), ident_val)
     # #tag_ident_end
 
+
+    # #tag_tokens_start
     def find_tokens(self):
         tokens = []
         while self.current_position < len(self.source):
@@ -78,3 +80,11 @@ class Lexer:
             if t != False:
                 tokens.append(t)
         return tokens
+    # #tag_tokens_end
+
+
+def _vprint(verbose_check: bool, msg: str):
+    if (verbose_check == True):
+        print(msg)
+
+        
