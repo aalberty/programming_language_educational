@@ -10,6 +10,9 @@ class Lexer:
     def __repr__(self):
         return f"Lexer({self.current_position}, {len(self.source)})"
     
+    # TODO: single main function `tokenize` which tracks straight through the file
+    # finding chunks to classify as different kinds of tokens
+
     def find_next_token(self):
         for t in token_type:
             # check that source has enough chars left in the len to possibly contain the token_type.value
