@@ -17,14 +17,6 @@ class Lexer:
     def __repr__(self):
         return f"Lexer({self.current_position}, {len(self.source)})"
     
-    # TODO: single main function `tokenize` which tracks straight through the file
-    # finding chunks to classify as different kinds of tokens
-    # skip the following token types when checking literal chars:
-    #   ILLEGAL = "ILLEGAL"
-    #   EOF = "EOF"
-    #   IDENT = "IDENT"
-    #   INT = "INT"
-    #   STR = "STR"
     def tokenize(self):
         tokens = []
         while self.current_position < len(self.source):

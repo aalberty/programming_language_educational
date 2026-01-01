@@ -87,6 +87,10 @@ TEST_CASES = {
             "function let var const if for else return",
             "FUNCTION LET VAR CONST IF FOR ELSE RETURN"
         ]
+    ],
+
+    "parse": [
+        ["let x = 5;", "letStatement(ident=x, value=5)"]
     ]
 }
 
@@ -106,9 +110,9 @@ def run_cases(verbose: bool):
 
     tests = list(TEST_CASES)    
     print(f"\nrunning tests: {list(tests)}")
-    print(f"{padding}{padding}")
 
     for test in tests:
+        print(f"{padding}{padding}")
         print(f'Test: {test}')
         cases = TEST_CASES[test]
         # make a copy, not a reference
