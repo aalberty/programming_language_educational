@@ -1,5 +1,6 @@
 from tkn import TokenType as token_type
 from lexer import Lexer as lexer
+from parser import Parser as parser
 # NOTE: To add new tests, check out the `new_test_instructions` tag
 
 # #tag_new_test_instructions_start
@@ -33,6 +34,8 @@ def tokenize(case, verbose):
     res = res.strip()
     return res
 
+def parse(case, verbose):
+    return
 
 
 
@@ -152,4 +155,13 @@ def run_cases(verbose: bool):
 
 
 
-run_cases(verbose=False)
+# run_cases(verbose=False)
+
+# one-off test
+
+case = 'let x = 5;'
+l = lexer(case)
+tokens = l.tokenize()
+p = parser(tokens)
+res = p.parse()
+print(res)
