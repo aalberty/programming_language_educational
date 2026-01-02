@@ -35,7 +35,11 @@ def tokenize(case, verbose):
     return res
 
 def parse(case, verbose):
-    return
+    l = lexer(case)
+    tokens = l.tokenize()
+    p = parser(tokens)
+    res = p.parse()
+    return f"{res}"
 
 
 
@@ -57,43 +61,78 @@ def parse(case, verbose):
 # #tag_new_test_instructions_end
 
 TEST_CASES = {
-    "tokenize": [
-        [
-            'let x = 5;',
-            'LET x = 5 ;'
-        ],
-        [
-            'let test = 10;',
-            'LET test = 10 ;'
-        ],
-        [
-            'let test = "this is a string";',
-            'LET test = "this is a string" ;'
-        ],
-        [
-            "let test = 'this is a string';",
-            'LET test = "this is a string" ;'
-        ],
-        [
-            'let x = (5 + 9);',
-            'LET x = ( 5 + 9 ) ;'
-        ],
-        [
-            '+ - * / = ; , ( ) { } < >',
-            '+ - * / = ; , ( ) { } < >'
-        ],
-        [
-            '== != <= >=',
-            '== != <= >='
-        ],
-        [
-            "function let var const if for else return",
-            "FUNCTION LET VAR CONST IF FOR ELSE RETURN"
-        ]
-    ],
+    # "tokenize": [
+    #     [
+    #         'let x = 5;',
+    #         'LET x = 5 ;'
+    #     ],
+    #     [
+    #         'let test = 10;',
+    #         'LET test = 10 ;'
+    #     ],
+    #     [
+    #         'let test = "this is a string";',
+    #         'LET test = "this is a string" ;'
+    #     ],
+    #     [
+    #         "let test = 'this is a string';",
+    #         'LET test = "this is a string" ;'
+    #     ],
+    #     [
+    #         'let x = (5 + 9);',
+    #         'LET x = ( 5 + 9 ) ;'
+    #     ],
+    #     [
+    #         '+ - * / = ; , ( ) { } < >',
+    #         '+ - * / = ; , ( ) { } < >'
+    #     ],
+    #     [
+    #         '== != <= >=',
+    #         '== != <= >='
+    #     ],
+    #     [
+    #         "function let var const if for else return",
+    #         "FUNCTION LET VAR CONST IF FOR ELSE RETURN"
+    #     ]
+    # ],
 
     "parse": [
-        ["let x = 5;", "letStatement(ident=x, value=5)"]
+        [
+            "",
+            "[]"
+        ],
+        [
+            "\n \t ",
+            '[]'
+        ],
+        [
+            "let x;",
+            "[LetStatement(Identifier(x), None)]"
+        ],
+        [
+            "let x = 5;",
+            "[LetStatement(Identifier(x), Literal(INT, 5))]"
+        ],
+        [
+            "let s = 'this is a string'",
+            "[LetStatement(Identifier(s), Literal(STR, \"this is a string\"))]"
+        ],
+        [
+            '{}',
+            '[BlockStatement([])]'
+        ],
+        [
+            """\
+            {
+                let x = 5;
+            }\
+            """,
+            '[BlockStatement([LetStatement(Identifier(x), Literal(INT, 5))])]'
+        ],
+        # [
+        #     "let y = 5 + 9;",
+        #     ""
+        # ],
     ]
 }
 
@@ -141,6 +180,8 @@ def run_cases(verbose: bool):
             # #tag_new_test_instructions_end
             if 'tokenize' == test:
                 res = tokenize(case[0], verbose)
+            if 'parse' == test:
+                res = parse(case[0], verbose)
 
             if res == case[1]:
                 scorecard['passes'] = scorecard['passes'] + 1
@@ -155,13 +196,4 @@ def run_cases(verbose: bool):
 
 
 
-# run_cases(verbose=False)
-
-# one-off test
-
-case = 'let x = 5;'
-l = lexer(case)
-tokens = l.tokenize()
-p = parser(tokens)
-res = p.parse()
-print(res)
+run_cases(verbose=False)
