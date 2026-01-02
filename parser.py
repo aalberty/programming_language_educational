@@ -131,6 +131,9 @@ class BlockStatement:
             return False
         
         # TODO: parse the block children
+        if len(tokens) > 2:
+            p = Parser(tokens[1:self.tokens_consumed])
+            self.children = p.parse()
         return self
 
 
