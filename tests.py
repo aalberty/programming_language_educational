@@ -137,12 +137,22 @@ TEST_CASES = {
                 let answer = "FALSE"
             }\
             """, 
-            ""
+            "[IfStatement(Condition(Token(TokenType.STR, '<CONDITION_PLACEHOLDER>')), BlockStatement([LetStatement(Identifier(answer), Literal(STR, \"TRUE!\"))]), BlockStatement([LetStatement(Identifier(answer), Literal(STR, \"FALSE\"))]))]"
         ],
         # [
-        #     "let y = 5 + 9;",
-        #     ""
+        #     """\
+        #     let addOne = 'True'
+        #     let sum = 0
+        #     if('<CONDITION_PLACEHOLDER>') {
+        #         sum = sum + 1
+        #     }\
+        #     """,
+        #     ''
         # ],
+        [
+            "let y = 5 + 9;",
+            ""
+        ],
     ]
 }
 

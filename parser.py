@@ -148,16 +148,20 @@ class IfStatement:
             return False
         potential_consumption += then_block.length_in_tokens
         
+        # print(f'DEBUG: tokens at `else_block_start` step: {tokens[potential_consumption:]}')
         else_block_start = _seek_token_type(tokens[potential_consumption:], token_type('{'))
         if else_block_start == False:
             print(f"WARN: missing ELSE_BLOCK left_brace.")
             return False
+        else_block_start += potential_consumption # since we gave a sub-list to _seek
         
         else_block_end = _seek_token_type(tokens[else_block_start:], token_type('}'))
         if else_block_end == False:
             print(f"WARN: missing ELSE_BLOCK right_brace.")
             return False
+        else_block_end += potential_consumption # since we gave a sub-list to _seek
         
+        # print(f'DEBUG: tokens at `else_block` step: {tokens[else_block_start: else_block_end]}')
         else_block = BlockStatement().validate_pattern(tokens[else_block_start:])
         if else_block == False:
             print(f"WARN: missing ELSE_BLOCK.")
@@ -167,50 +171,9 @@ class IfStatement:
         self.condition = condition
         self.then_block = then_block
         self.else_block = else_block
+        self.length_in_tokens = potential_consumption
         return self
 
-    def _validate_pattern(self, tokens: list):
-        # IF __ '(' __ <CONDITION>__ ')'__ '{' __ <THEN_STMT> __ '}' __ 'ELSE' __ '{' __<ELSE_STMT>__ '}'
-        # 
-        # e.g.:
-        #
-        # if (this) {
-        #     do that
-        # } else {
-        #     do this other thing
-        # }
-        p = Parser(tokens)
-
-        # rules = {
-        #     1 : '(',
-        #     2 : '<CONDITION_PLACEHOLDER>',
-        #     3 : ')',
-        #     4 : '{'
-        #     5 : 'Statement(IfStatement.then_statement)',
-        #     6 : '}',
-        #     7 : '{',
-        #     8 : 'Statement(IfStatement.else_statement)',
-        #     9 : '}' 
-        # }
-        
-        then_statement_valid = BlockStatement().validate_pattern(tokens[4:])
-        z = 0
-        if then_statement_valid:
-            z = then_statement_valid.length_in_tokens
-
-        else_statement_valid = BlockStatement().validate_pattern(tokens[4 + z + 2:])
-        if else_statement_valid != False:
-            z += else_statement_valid.length_in_tokens
-
-        validated =  tokens[1].type.name == 'LPAREN' and tokens[2].literal == "<CONDITION_PLACEHOLDER>" and tokens[3].type.name == 'RPAREN' and  tokens[4].type.name == 'LBRACE'  and then_statement_valid != False and tokens[4 + then_statement_valid.length_in_tokens].type.name == 'RBRACE' and tokens[4 + z + 1].type.name == 'LBRACE'and else_statement_valid != False and tokens[4 + z + 2].type.name == 'RBRACE'
-        
-        if validated:
-            self.condition = '<CONDITION_PLACEHOLDER>'
-            self.then_block = then_statement_valid,
-            self.else_block = else_statement_valid
-
-        return self
-    
 
 class BlockStatement:
     def __init__(self):
@@ -309,7 +272,3 @@ def _seek_token_type(tokens: list, type: token_type):
             return found_at
         found_at += 1
     return False
-
-# TODO: pprint the AST so you can tell what the hell is going on
-def pp_ast(ast: list):
-    return
