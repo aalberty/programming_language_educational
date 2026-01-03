@@ -5,7 +5,8 @@ from tkn import RESERVED_TOKEN_TYPES, NONRESERVED_TOKEN_TYPES
 WHITESPACE_CHARS = [
     ' ',
     '\t',
-    '\n'
+    '\n',
+    'else',
 ]
 
 class Lexer:

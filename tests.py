@@ -129,6 +129,16 @@ TEST_CASES = {
             """,
             '[BlockStatement([LetStatement(Identifier(x), Literal(INT, 5))])]'
         ],
+        [
+            """\
+            if ('<CONDITION_PLACEHOLDER>'){
+                let answer = "TRUE!"
+            } else {
+                let answer = "FALSE"
+            }\
+            """, 
+            ""
+        ],
         # [
         #     "let y = 5 + 9;",
         #     ""

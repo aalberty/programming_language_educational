@@ -50,7 +50,7 @@ class LetStatement:
     def __init__(self):
         self.name = None
         self.value = None
-        self.tokens_consumed = 0
+        self.length_in_tokens = 0
         return
 
     def __repr__(self):
@@ -71,7 +71,7 @@ class LetStatement:
         
         if tokens[2].type.name == 'SEMICOLON':
             self.value = None
-            self.tokens_consumed = 3
+            self.length_in_tokens = 3
             return self
         
         elif tokens[2].type.name == 'ASSIGN':
@@ -86,29 +86,135 @@ class LetStatement:
             elif tokens[3].type.name == 'INT':
                 self.value = Literal(tokens[3].type, tokens[3].literal)
             
-            self.tokens_consumed = 4
+            self.length_in_tokens = 4
 
         return self
     
+class Condition:
+    def __init__(self):
+        self.value = token(token_type('STR'), "<CONDITION_PLACEHOLDER>")
+        self.length_in_tokens = 1
+        return
+
+    def __repr__(self):
+        return f"Condition({self.value})"
+
+
+
 # TODO: define the pattern, and add to the parser registry
 class IfStatement:
     def __init__(self):
-        self.tokens_consumed
-        self.condition
-        self.then_block
-        self.else_block
+        self.length_in_tokens = 1
+        self.condition = None
+        self.then_block = None
+        self.else_block = None
         return
 
     def __repr__(self):
         return f'IfStatement({self.condition}, {self.then_block}, {self.else_block})'
     
     def validate_pattern(self, tokens: list):
-        return
+        potential_consumption = 0
+        condition_start = _seek_token_type(tokens, token_type('('))
+        if condition_start == False:
+            print(f"WARN: IF condition missing '('.")
+            return False
+        potential_consumption += 1
+
+        condition_end = _seek_token_type(tokens[condition_start:], token_type(')'))
+        if condition_end == False:
+            print(f"WARN: IF condition missing ')'.")
+            return False
+        potential_consumption += 1
+        
+        # using a placeholder rn
+        condition = Condition()
+        print(f"INFO: got <PLACEHOLDER_CONDITION>.")
+        potential_consumption += condition.length_in_tokens
+
+        then_block_start = _seek_token_type(tokens, token_type('{'))
+        if then_block_start == False:
+            print(f"WARN: missing THEN_BLOCK left_brace.")
+            return False
+
+        then_block_end = _seek_token_type(tokens[then_block_start:], token_type('}'))
+        if then_block_end == False:
+            print(f"WARN: missing THEN_BLOCK right_brace.")
+            return False
+        
+        then_block = BlockStatement().validate_pattern(tokens[then_block_start:])
+        if then_block == False:
+            print(f"WARN: missing THEN_BLOCK.")
+            return False
+        potential_consumption += then_block.length_in_tokens
+        
+        else_block_start = _seek_token_type(tokens[potential_consumption:], token_type('{'))
+        if else_block_start == False:
+            print(f"WARN: missing ELSE_BLOCK left_brace.")
+            return False
+        
+        else_block_end = _seek_token_type(tokens[else_block_start:], token_type('}'))
+        if else_block_end == False:
+            print(f"WARN: missing ELSE_BLOCK right_brace.")
+            return False
+        
+        else_block = BlockStatement().validate_pattern(tokens[else_block_start:])
+        if else_block == False:
+            print(f"WARN: missing ELSE_BLOCK.")
+            return False
+        potential_consumption += else_block.length_in_tokens
+
+        self.condition = condition
+        self.then_block = then_block
+        self.else_block = else_block
+        return self
+
+    def _validate_pattern(self, tokens: list):
+        # IF __ '(' __ <CONDITION>__ ')'__ '{' __ <THEN_STMT> __ '}' __ 'ELSE' __ '{' __<ELSE_STMT>__ '}'
+        # 
+        # e.g.:
+        #
+        # if (this) {
+        #     do that
+        # } else {
+        #     do this other thing
+        # }
+        p = Parser(tokens)
+
+        # rules = {
+        #     1 : '(',
+        #     2 : '<CONDITION_PLACEHOLDER>',
+        #     3 : ')',
+        #     4 : '{'
+        #     5 : 'Statement(IfStatement.then_statement)',
+        #     6 : '}',
+        #     7 : '{',
+        #     8 : 'Statement(IfStatement.else_statement)',
+        #     9 : '}' 
+        # }
+        
+        then_statement_valid = BlockStatement().validate_pattern(tokens[4:])
+        z = 0
+        if then_statement_valid:
+            z = then_statement_valid.length_in_tokens
+
+        else_statement_valid = BlockStatement().validate_pattern(tokens[4 + z + 2:])
+        if else_statement_valid != False:
+            z += else_statement_valid.length_in_tokens
+
+        validated =  tokens[1].type.name == 'LPAREN' and tokens[2].literal == "<CONDITION_PLACEHOLDER>" and tokens[3].type.name == 'RPAREN' and  tokens[4].type.name == 'LBRACE'  and then_statement_valid != False and tokens[4 + then_statement_valid.length_in_tokens].type.name == 'RBRACE' and tokens[4 + z + 1].type.name == 'LBRACE'and else_statement_valid != False and tokens[4 + z + 2].type.name == 'RBRACE'
+        
+        if validated:
+            self.condition = '<CONDITION_PLACEHOLDER>'
+            self.then_block = then_statement_valid,
+            self.else_block = else_statement_valid
+
+        return self
     
 
 class BlockStatement:
     def __init__(self):
-        self.tokens_consumed = 1
+        self.length_in_tokens = 1
         self.children = []
         return
     
@@ -125,14 +231,13 @@ class BlockStatement:
                 break
 
         if block_end_found:
-            self.tokens_consumed += potential_consumption
+            self.length_in_tokens += potential_consumption
         else:
             # PROBLEM!
             return False
         
-        # TODO: parse the block children
         if len(tokens) > 2:
-            p = Parser(tokens[1:self.tokens_consumed])
+            p = Parser(tokens[1:self.length_in_tokens])
             self.children = p.parse()
         return self
 
@@ -146,6 +251,7 @@ class Parser:
 
         self.NODE_TYPE_REGISTRY = {
             'LET': LetStatement,
+            'IF': IfStatement,
             '{': BlockStatement
         }
         return
@@ -184,7 +290,7 @@ class Parser:
     def consume(self, validated_node = None, override_count = None):
         consume_count = 0
         if validated_node != None:
-            consume_count = validated_node.tokens_consumed
+            consume_count = validated_node.length_in_tokens
         else:
             if override_count == None:
                 print(f"ERR: must either provide a validated node or override_count to inform parser of how many tokens must be consumed.")
@@ -196,3 +302,13 @@ class Parser:
         return
 
 
+def _seek_token_type(tokens: list, type: token_type):
+    found_at = 0
+    for t in tokens:
+        if t.type == type:
+            return found_at
+        found_at += 1
+    return False
+
+def pp_ast(ast: list):
+    return
