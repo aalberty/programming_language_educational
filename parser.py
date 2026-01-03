@@ -310,5 +310,6 @@ def _seek_token_type(tokens: list, type: token_type):
         found_at += 1
     return False
 
+# TODO: pprint the AST so you can tell what the hell is going on
 def pp_ast(ast: list):
     return
